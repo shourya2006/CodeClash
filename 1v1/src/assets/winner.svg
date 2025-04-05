@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#1a1a2e" />
+  
+  <!-- Trophy Cup - Enlarged and centered -->
+  <path d="M325 150 L475 150 Q510 150 510 185 L510 300 Q510 380 425 410 L400 420 L375 410 Q290 380 290 300 L290 185 Q290 150 325 150 Z" fill="#ffd700" stroke="#e6b800" stroke-width="8" />
+  <rect x="370" y="420" width="60" height="30" fill="#ffd700" stroke="#e6b800" stroke-width="5" />
+  <rect x="380" y="450" width="40" height="50" fill="#ffd700" stroke="#e6b800" stroke-width="5" />
+  <ellipse cx="400" cy="510" rx="70" ry="15" fill="#4361ee" />
+  
+  <!-- Trophy Handles -->
+  <path d="M290 230 Q240 230 240 280 Q240 330 290 330" fill="none" stroke="#e6b800" stroke-width="12" />
+  <path d="M510 230 Q560 230 560 280 Q560 330 510 330" fill="none" stroke="#e6b800" stroke-width="12" />
+  
+  <!-- Code Symbol on Trophy -->
+  <path d="M370 260 L330 300 L370 340" fill="none" stroke="#1a1a2e" stroke-width="12" stroke-linecap="round" />
+  <path d="M430 260 L470 300 L430 340" fill="none" stroke="#1a1a2e" stroke-width="12" stroke-linecap="round" />
+  
+  <!-- Binary/Code elements floating around -->
+  <text x="150" y="150" font-family="Courier" font-size="24" fill="#4cc9f0" transform="rotate(-15,150,150)">01001</text>
+  <text x="600" y="200" font-family="Courier" font-size="24" fill="#4cc9f0" transform="rotate(15,600,200)">10110</text>
+  <text x="650" y="350" font-family="Courier" font-size="22" fill="#4cc9f0" transform="rotate(45,650,350)">{code}</text>
+  <text x="120" y="320" font-family="Courier" font-size="22" fill="#4cc9f0" transform="rotate(-30,120,320)">&lt;/&gt;</text>
+  <text x="250" y="450" font-family="Courier" font-size="20" fill="#4cc9f0" transform="rotate(-10,250,450)">function()</text>
+  <text x="550" y="480" font-family="Courier" font-size="20" fill="#4cc9f0" transform="rotate(10,550,480)">while(true)</text>
+  
+  <!-- Star bursts around trophy -->
+  <polygon points="500,120 515,135 530,120 515,105" fill="#fff" />
+  <polygon points="270,120 285,135 300,120 285,105" fill="#fff" />
+  <polygon points="580,250 595,265 610,250 595,235" fill="#fff" />
+  <polygon points="190,250 205,265 220,250 205,235" fill="#fff" />
+  <polygon points="500,420 515,435 530,420 515,405" fill="#fff" />
+  <polygon points="270,420 285,435 300,420 285,405" fill="#fff" />
+  
+  <!-- Title text -->
+  <text x="400" y="100" font-family="Arial Black" font-size="50" fill="#ffffff" text-anchor="middle" font-weight="bold">WINNER!!</text>
+  
+  <!-- Description text -->
+  <text x="400" y="550" font-family="Arial" font-size="18" fill="#ffffff" text-anchor="middle">Show off your coding skills and earn recognition in the developer community.</text>
+</svg>

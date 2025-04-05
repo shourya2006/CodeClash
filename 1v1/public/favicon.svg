@@ -1,0 +1,14 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Outer hexagon -->
+  <polygon points="32,8 56,20 56,44 32,56 8,44 8,20" fill="#222222" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Inner hexagon -->
+  <polygon points="32,22 44,28 44,40 32,46 20,40 20,28" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
+  
+  <!-- Inner hexagon top face -->
+  <polygon points="20,28 32,22 44,28 32,34" fill="#cccccc" stroke="#ffffff" stroke-width="0.5"/>
+  
+  <!-- Highlight -->
+  <circle cx="24" cy="24" r="2" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- 3D Hexagon - Bottom face shadow -->
+  <polygon points="200,205 145,175 145,115 200,85" fill="#111111" stroke="#333333" stroke-width="1"/>
+  
+  <!-- 3D Hexagon - Right face highlight -->
+  <polygon points="200,205 255,175 255,115 200,85" fill="#222222" stroke="#333333" stroke-width="1"/>
+  
+  <!-- 3D Hexagon - Top face -->
+  <polygon points="145,115 200,85 255,115 200,145" fill="#444444" stroke="#ffffff" stroke-width="1.5"/>
+  
+  <!-- 3D Hexagon - Front edges -->
+  <line x1="145" y1="115" x2="145" y2="175" stroke="#ffffff" stroke-width="2.5"/>
+  <line x1="145" y1="175" x2="200" y2="205" stroke="#ffffff" stroke-width="2.5"/>
+  <line x1="200" y1="205" x2="255" y2="175" stroke="#ffffff" stroke-width="2.5"/>
+  <line x1="255" y1="175" x2="255" y2="115" stroke="#ffffff" stroke-width="2.5"/>
+  <line x1="255" y1="115" x2="200" y2="85" stroke="#ffffff" stroke-width="2.5"/>
+  <line x1="200" y1="85" x2="145" y2="115" stroke="#ffffff" stroke-width="2.5"/>
+  
+  <!-- Inner 3D Hexagon - small hexagon with dimension -->
+  <polygon points="200,145 225,160 225,190 200,205 175,190 175,160" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
+  
+  <!-- Inner 3D hexagon - top face shading -->
+  <polygon points="175,160 200,145 225,160 200,175" fill="#cccccc" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Inner 3D hexagon - dimension lines -->
+  <line x1="200" y1="175" x2="200" y2="205" stroke="#aaaaaa" stroke-width="1"/>
+  <line x1="175" y1="160" x2="175" y2="190" stroke="#aaaaaa" stroke-width="1"/>
+  <line x1="225" y1="160" x2="225" y2="190" stroke="#aaaaaa" stroke-width="1"/>
+  
+  <!-- Highlight glints -->
+  <circle cx="180" cy="150" r="3" fill="#ffffff"/>
+  <circle cx="200" cy="100" r="2" fill="#ffffff"/>
+</svg>

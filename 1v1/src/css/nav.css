@@ -1,0 +1,49 @@
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: transparent;
+}
+
+.image img{
+    width: 150px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link a{
+    text-decoration: none;
+    font-size: 20px;
+    padding: 20px;
+    margin: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.nav-link a:hover {
+    color: white;
+}
+
+.active{
+    color: white !important;
+    font-weight: 500;
+}
+
+.active::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background-color: white;
+    z-index: 1;
+}
+
+
