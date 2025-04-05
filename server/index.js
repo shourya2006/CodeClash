@@ -3,6 +3,7 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const axios = require("axios");
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
@@ -26,7 +27,7 @@ const generateRoomId = () => {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
@@ -570,6 +571,7 @@ io.on("disconnect", () => {
   console.log("user disconnected");
 });
 
-server.listen(8080, () => {
-  console.log("SERVER RUNNING...");
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  console.log(`SERVER RUNNING ON PORT ${PORT}...`);
 });

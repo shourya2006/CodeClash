@@ -9,7 +9,7 @@ const CreateRoom = () => {
 
   useEffect(() => {
     if (!socket) {
-      const newSocket = io('http://localhost:8080', {
+      const newSocket = io(import.meta.env.VITE_SERVER_URL || 'http://localhost:8080', {
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         transports: ['websocket'],
