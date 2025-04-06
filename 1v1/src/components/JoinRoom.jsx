@@ -46,14 +46,14 @@ const JoinRoom = () => {
       // console.error('Error from server:', data);
       setError(data.message);
       setIsLoading(false);
-      alert(data.message);
+      // alert(data.message);
     });
     
     newSocket.on('roomNotFound', () => {
       // console.error('Room not found event received');
       setError('Room not found! Please check the room code and try again.');
       setIsLoading(false);
-      alert('Room not found! Please check the room code and try again.');
+      // alert('Room not found! Please check the room code and try again.');
     });
 
     setSocket(newSocket);
@@ -115,7 +115,7 @@ const JoinRoom = () => {
       <h1 className="join-room-title">Join an Existing Room</h1>
       
       {error && <div className="error-message">{error}</div>}
-      
+      <br />
       <form className="join-room-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Display Name</label>
