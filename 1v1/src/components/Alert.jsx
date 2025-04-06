@@ -6,7 +6,7 @@ const Alert = ({ type, message, isVisible, onClose }) => {
     if (isVisible) {
       const timer = setTimeout(() => {
         onClose();
-      }, 7000);
+      }, 2000);
       
       return () => clearTimeout(timer);
     }

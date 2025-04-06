@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
     rooms.push(roomId);
 
     const roomRating = parseInt(data.rating) || 1500;
-    const timeLimit = parseInt(data.timeLimit) || 3;
+    const timeLimit = parseInt(data.timeLimit);
 
     datas.push({
       roomId: roomId,
@@ -162,7 +162,7 @@ io.on("connection", (socket) => {
           const startTime = new Date(roomData.startTime).getTime();
           const currentTime = new Date().getTime();
           const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
-          const totalSeconds = (roomData.timeLimit || 3) * 60;
+          const totalSeconds = roomData.timeLimit * 60;
           timeRemaining = Math.max(0, totalSeconds - elapsedSeconds);
           console.log(
             `Game in progress. Elapsed time: ${elapsedSeconds}s, Time remaining: ${timeRemaining}s`
@@ -178,7 +178,7 @@ io.on("connection", (socket) => {
           problemLink: roomData.problemLink,
           problemName: roomData.problemName,
           problemRating: roomData.problemRating,
-          timeLimit: roomData.timeLimit || 3,
+          timeLimit: roomData.timeLimit,
           startTime: roomData.startTime,
           timeRemaining: timeRemaining,
         });
@@ -204,7 +204,7 @@ io.on("connection", (socket) => {
       roomData.testCases = {}; // Reset test cases on new game
 
       roomData.startTime = new Date().toISOString();
-      roomData.timeLimit = data.timeLimit || 3;
+      roomData.timeLimit = data.timeLimit;
 
       console.log(`Stored problem data in room: ${data.problemLink}`);
       console.log(

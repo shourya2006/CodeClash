@@ -19,7 +19,7 @@ const Room = () => {
     roomName: "Loading...",
     roomCode: roomId,
     players: [],
-    timeLimit: 3,
+    timeLimit: 0,
     rating: 1500,
     problemLink: null,
     gameInProgress: false
@@ -160,7 +160,7 @@ const Room = () => {
         roomName: data.roomName || "Unknown Room",
         roomCode: data.roomId || roomId,
         players: data.players || [],
-        timeLimit: data.timeLimit || 3,
+        timeLimit: data.timeLimit || 0,
         rating: roomRating,
         problemLink: problemLink,
         gameInProgress: data.gameInProgress || false
@@ -191,7 +191,7 @@ const Room = () => {
           });
         } else {
           setCountdown({
-            minutes: data.timeLimit || 3,
+            minutes: data.timeLimit || 0,
             seconds: 0,
             isActive: true,
           });
@@ -225,7 +225,7 @@ const Room = () => {
         return updatedData;
       });
 
-      const timeLimit = data.timeLimit || roomData.timeLimit || 3;
+      const timeLimit = data.timeLimit || roomData.timeLimit || 0;
       // console.log(`Setting timer with time limit: ${timeLimit} minutes`);
       
       setCountdown({
