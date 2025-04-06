@@ -20,7 +20,6 @@ const Footer = () => {
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>
             <Link to="/contact">Contact</Link>
-            <Link to="/tutorial">How It Works</Link>
           </nav>
         </div>
 
@@ -28,7 +27,7 @@ const Footer = () => {
           <h4>Connect With Us</h4>
           <div className="social-links">
             <a
-              href="https://github.com"
+              href="https://github.com/shourya2006"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -42,7 +41,7 @@ const Footer = () => {
               <i className="fab fa-discord" style={{fontSize: '1rem'}}></i> Discord
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/shourya-bafna-80a670215/"
               target="_blank"
               rel="noopener noreferrer"
             >
