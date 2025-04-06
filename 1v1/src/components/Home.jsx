@@ -22,7 +22,7 @@ const Home = () => {
     { 
       image: winner, 
       title: "Winner!!", 
-      description: "Compete for victory and climb the leaderboard. Show off your coding skills and earn recognition in the developer community." 
+      description: "Compete head-to-head and claim victory by solving Codeforces problems faster than your opponent. Experience the thrill of competitive programming in real-time." 
     },
   ];
   return (
