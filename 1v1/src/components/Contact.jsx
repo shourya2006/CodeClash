@@ -61,7 +61,7 @@ const Contact = () => {
           <h2>Contact Information</h2>
           <div className="info-item">
             <i className="fas fa-envelope"></i>
-            <p>shourya.bafna2024@nst.rishihood.edu.in</p>
+            <p className="email-wrap">shourya.bafna2024@nst.rishihood.edu.in</p>
           </div>
           <div className="info-item">
             <i className="fas fa-map-marker-alt"></i>

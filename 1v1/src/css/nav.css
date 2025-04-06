@@ -4,6 +4,7 @@
     justify-content: space-between;
     padding: 1rem 2rem;
     background: transparent;
+    position: relative;
 }
 
 .image img{
@@ -44,6 +45,114 @@
     height: 2px;
     background-color: white;
     z-index: 1;
+}
+
+/* Menu icon for mobile */
+.menu-icon {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.menu-line {
+    height: 3px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+/* Animated hamburger to X */
+.menu-line.open:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.menu-line.open:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-line.open:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Dark overlay when menu is open */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 4;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .menu-icon {
+        display: flex;
+    }
+
+    .nav-link {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        flex-direction: column;
+        background: rgba(13, 13, 13, 0.95);
+        backdrop-filter: blur(10px);
+        padding-top: 70px;
+        transition: right 0.3s ease;
+        z-index: 5;
+        justify-content: flex-start;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-link.open {
+        right: 0;
+    }
+
+    .nav-link a {
+        margin: 10px 0;
+        padding: 15px 25px;
+        width: 100%;
+        text-align: left;
+        font-size: 18px;
+    }
+    
+    .active::after {
+        bottom: 5px;
+        left: 25px;
+        right: 25px;
+    }
+    
+    .image img {
+        width: 130px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav {
+        padding: 0.8rem 1rem;
+    }
+    
+    .image img {
+        width: 130px;
+        min-width: 130px;
+    }
+    
+    .nav-link {
+        width: 80%;
+    }
 }
 
 

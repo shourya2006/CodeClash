@@ -4,8 +4,10 @@
     border-radius: 20px;
     padding: 1.5rem;
     width: 300px;
+    max-width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 auto;
 }
 
 .card:hover {
@@ -42,6 +44,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
+    text-align: center;
 }
 
 .card-description {
@@ -50,4 +53,34 @@
     font-size: 0.9rem;
     line-height: 1.5;
     font-weight: 300;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+        margin-bottom: 2rem;
+    }
+    
+    .card-image {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1rem;
+    }
+    
+    .card-image {
+        height: 150px;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .card-description {
+        font-size: 0.85rem;
+    }
 } 
