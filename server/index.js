@@ -3,7 +3,7 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const axios = require("axios");
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
       p1Handle: data.codeforcesHandle,
       p1Rating: 0,
       P1SocketId: 0,
-      testCases: {} // Track test cases passed by players
+      testCases: {}, // Track test cases passed by players
     });
 
     // console.log(`Created room ${roomId} with rating: ${roomRating}`);
@@ -73,14 +73,21 @@ io.on("connection", (socket) => {
     // console.log(`room Data -`);
     if (data && roomData) {
       if (roomData.P1SocketId === 0) {
-        roomData.P1SocketId = data.newSocketId;
+        roomData.P1SocketId = socket.id;
       } else {
-        roomData.P2SocketId = data.newSocketId;
+        roomData.P2SocketId = socket.id;
       }
     }
     // console.log(roomData);
     if (roomData) {
       console.log(`Found room: ${roomData.roomId}`);
+
+      if (data.codeforcesHandle && 
+          ((roomData.p1Handle && data.codeforcesHandle.toLowerCase() === roomData.p1Handle.toLowerCase()) || 
+           (roomData.p2Handle && data.codeforcesHandle.toLowerCase() === roomData.p2Handle.toLowerCase()))) {
+        socket.emit("error", { message: "A player with this Codeforces handle already exists in the room" });
+        return;
+      }
 
       socket.join(roomData.roomId);
       console.log(`User ${socket.id} joined room: ${roomData.roomId}`);
@@ -226,15 +233,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("verifySolution", async (data) => {
-    console.log(`Verifying solution for player ${data.playerId} in room ${data.roomId}`);
-    
-    const roomData = datas.find(room => room.roomId === data.roomId);
+    console.log(
+      `Verifying solution for player ${data.playerId} in room ${data.roomId}`
+    );
+
+    const roomData = datas.find((room) => room.roomId === data.roomId);
     if (!roomData) {
       console.error(`Room ${data.roomId} not found when verifying solution`);
       socket.emit("error", { message: "Room not found" });
       return;
     }
-    
+
     // Find the player's handle
     let playerHandle = null;
     if (roomData.P1SocketId === data.playerId) {
@@ -244,81 +253,98 @@ io.on("connection", (socket) => {
       playerHandle = roomData.p2Handle;
       console.log(`Identified as Player 2: ${playerHandle}`);
     } else {
-      console.error(`Socket ID ${data.playerId} doesn't match either player in room ${data.roomId}`);
-      console.log(`Player 1 Socket: ${roomData.P1SocketId}, Player 2 Socket: ${roomData.P2SocketId}`);
+      console.error(
+        `Socket ID ${data.playerId} doesn't match either player in room ${data.roomId}`
+      );
+      console.log(
+        `Player 1 Socket: ${roomData.P1SocketId}, Player 2 Socket: ${roomData.P2SocketId}`
+      );
       socket.emit("error", { message: "Player not found in room" });
       return;
     }
-    
+
     if (!playerHandle) {
-      console.error(`Could not find Codeforces handle for player ${data.playerId}`);
+      console.error(
+        `Could not find Codeforces handle for player ${data.playerId}`
+      );
       socket.emit("error", { message: "Codeforces handle not set properly" });
       return;
     }
-    
+
     try {
       // Get the problem details from the room data
       const contestId = roomData.contestId;
       const index = roomData.index;
-      
+
       if (!contestId || !index) {
         console.error(`Missing problem details in room ${data.roomId}`);
-        socket.emit("error", { message: "Problem details missing. Try restarting the game." });
+        socket.emit("error", {
+          message: "Problem details missing. Try restarting the game.",
+        });
         return;
       }
-      
-      console.log(`Checking submissions for ${playerHandle} on problem ${contestId}${index}`);
-      
+
+      console.log(
+        `Checking submissions for ${playerHandle} on problem ${contestId}${index}`
+      );
+
       // Call Codeforces API to get recent submissions
       console.log(`Making API request to Codeforces for ${playerHandle}`);
-      const response = await axios.get(`https://codeforces.com/api/user.status?handle=${playerHandle}&count=30`);
-      
+      const response = await axios.get(
+        `https://codeforces.com/api/user.status?handle=${playerHandle}&count=30`
+      );
+
       if (response.status !== 200) {
         console.error(`Codeforces API returned status ${response.status}`);
         throw new Error(`Codeforces API error: ${response.statusText}`);
       }
-      
+
       if (response.data.status !== "OK") {
         console.error(`Codeforces API returned status ${response.data.status}`);
         throw new Error("Codeforces API returned an error");
       }
-      
+
       // Get the submission time from when the game started
       const gameStartTime = new Date(roomData.startTime).getTime() / 1000; // Convert to seconds
       console.log(`Game started at timestamp: ${gameStartTime}`);
-      
+
       // Check if there's a correct submission for this problem after the game started
       const submissions = response.data.result;
-      console.log(`Retrieved ${submissions.length} submissions for ${playerHandle}`);
-      
+      console.log(
+        `Retrieved ${submissions.length} submissions for ${playerHandle}`
+      );
+
       let correctSubmission = null;
       let testCasesPassed = 0;
       let submissionFound = false;
-      
+
       for (const submission of submissions) {
         // Match problem by ID and index
-        const problemMatches = submission.problem.contestId == contestId && 
-                               submission.problem.index === index;
-        
+        const problemMatches =
+          submission.problem.contestId == contestId &&
+          submission.problem.index === index;
+
         // Check if submission time is after game start
         const isAfterGameStart = submission.creationTimeSeconds > gameStartTime;
-        
+
         if (problemMatches) {
           console.log(`Found submission for problem ${contestId}${index}:`, {
             submissionId: submission.id,
             verdict: submission.verdict,
             testsPassed: submission.passedTestCount || 0,
             submittedAt: submission.creationTimeSeconds,
-            isAfterGameStart: isAfterGameStart
+            isAfterGameStart: isAfterGameStart,
           });
-          
+
           if (!isAfterGameStart) {
-            console.log(`Submission ${submission.id} was made before the game started, ignoring`);
+            console.log(
+              `Submission ${submission.id} was made before the game started, ignoring`
+            );
             continue;
           }
-          
+
           submissionFound = true;
-          
+
           if (submission.verdict === "OK") {
             // Correct submission
             correctSubmission = submission;
@@ -331,122 +357,146 @@ io.on("connection", (socket) => {
             console.log(`Submission ${submission.id} is pending judgment`);
           } else {
             // Wrong submission but count test cases
-            console.log(`Wrong submission ${submission.id} with verdict ${submission.verdict}`);
-            console.log(`Passed test cases: ${submission.passedTestCount || 0}`);
-            testCasesPassed = Math.max(testCasesPassed, submission.passedTestCount || 0);
+            console.log(
+              `Wrong submission ${submission.id} with verdict ${submission.verdict}`
+            );
+            console.log(
+              `Passed test cases: ${submission.passedTestCount || 0}`
+            );
+            testCasesPassed = Math.max(
+              testCasesPassed,
+              submission.passedTestCount || 0
+            );
           }
         }
       }
-      
+
       if (!submissionFound) {
-        console.log(`No submissions found for problem ${contestId}${index} after game start`);
+        console.log(
+          `No submissions found for problem ${contestId}${index} after game start`
+        );
       }
-      
+
       // Store the test cases result for this player
       roomData.testCases[data.playerId] = testCasesPassed;
-      
+
       const isCorrect = !!correctSubmission;
-      console.log(`Final verification result for ${playerHandle}: ${isCorrect ? 'correct' : 'incorrect'}, test cases: ${testCasesPassed}`);
-      
+      console.log(
+        `Final verification result for ${playerHandle}: ${
+          isCorrect ? "correct" : "incorrect"
+        }, test cases: ${testCasesPassed}`
+      );
+
       // If correct, this player is the winner
       if (isCorrect) {
         console.log(`Player ${data.playerName} has won the game!`);
-        
+
         // Mark the game as over
         roomData.gameInProgress = false;
         roomData.winner = data.playerName;
         roomData.gameWinnerId = data.playerId;
-        
+
         // Broadcast game over to all players in the room
-        console.log(`Broadcasting game over to all players in room ${data.roomId}`);
+        console.log(
+          `Broadcasting game over to all players in room ${data.roomId}`
+        );
         io.to(data.roomId).emit("gameOver", {
           winner: data.playerName,
           winnerId: data.playerId,
           isDraw: false,
-          testCases: roomData.testCases
+          testCases: roomData.testCases,
         });
       }
-      
+
       // Send verification result to the player
       socket.emit("verificationResult", {
         success: isCorrect,
         testCasesPassed: testCasesPassed,
         socketId: data.playerId,
         playerName: data.playerName,
-        submissionFound: submissionFound
+        submissionFound: submissionFound,
       });
     } catch (error) {
       console.error("Error verifying solution:", error);
-      socket.emit("error", { 
-        message: `Error verifying your solution: ${error.message}. Please try again in a moment.` 
+      socket.emit("error", {
+        message: `Error verifying your solution: ${error.message}. Please try again in a moment.`,
       });
     }
   });
-  
+
   socket.on("gameOver", (data) => {
     console.log(`Game over in room ${data.roomId}, winner: ${data.winner}`);
-    
-    const roomData = datas.find(room => room.roomId === data.roomId);
+
+    const roomData = datas.find((room) => room.roomId === data.roomId);
     if (!roomData) {
       console.error(`Room ${data.roomId} not found when ending game`);
       return;
     }
-    
+
     roomData.gameInProgress = false;
     roomData.winner = data.winner;
     roomData.gameWinnerId = data.winnerId;
-    
-    console.log(`Broadcasting game over event to room ${data.roomId} with winner: ${data.winner}`);
-    
+
+    console.log(
+      `Broadcasting game over event to room ${data.roomId} with winner: ${data.winner}`
+    );
+
     // Notify all players in the room
     io.to(data.roomId).emit("gameOver", {
       winner: data.winner,
       winnerId: data.winnerId,
       isDraw: false,
-      testCases: roomData.testCases
+      testCases: roomData.testCases,
     });
-    
+
     // Log confirmation of broadcast
-    console.log(`Game over notification sent to all players in room ${data.roomId}`);
+    console.log(
+      `Game over notification sent to all players in room ${data.roomId}`
+    );
   });
-  
+
   socket.on("updateTestCases", (data) => {
-    console.log(`Updating test cases for player ${data.socketId} in room ${data.roomId}: ${data.testCasesPassed}`);
-    
-    const roomData = datas.find(room => room.roomId === data.roomId);
+    console.log(
+      `Updating test cases for player ${data.socketId} in room ${data.roomId}: ${data.testCasesPassed}`
+    );
+
+    const roomData = datas.find((room) => room.roomId === data.roomId);
     if (!roomData) {
       console.error(`Room ${data.roomId} not found when updating test cases`);
       return;
     }
-    
+
     roomData.testCases[data.socketId] = data.testCasesPassed;
   });
-  
+
   socket.on("timeUp", (data) => {
     console.log(`Time up in room ${data.roomId}`);
-    
-    const roomData = datas.find(room => room.roomId === data.roomId);
+
+    const roomData = datas.find((room) => room.roomId === data.roomId);
     if (!roomData) {
       console.error(`Room ${data.roomId} not found when time is up`);
       return;
     }
-    
+
     roomData.gameInProgress = false;
-    
+
     // Find the winner based on test cases
     const testCases = roomData.testCases || {};
     let winner = null;
     let maxTestCases = 0;
     let isDraw = false;
-    
+
     const playerIds = Object.keys(testCases);
-    
+
     // If no test cases or all 0, it's a draw
-    if (playerIds.length === 0 || playerIds.every(id => testCases[id] === 0)) {
+    if (
+      playerIds.length === 0 ||
+      playerIds.every((id) => testCases[id] === 0)
+    ) {
       isDraw = true;
     } else {
       // Find the player with most test cases passed
-      playerIds.forEach(playerId => {
+      playerIds.forEach((playerId) => {
         const testCasesPassed = testCases[playerId] || 0;
         if (testCasesPassed > maxTestCases) {
           maxTestCases = testCasesPassed;
@@ -459,7 +509,7 @@ io.on("connection", (socket) => {
         }
       });
     }
-    
+
     // Get the winner's name
     let winnerName = null;
     if (winner && !isDraw) {
@@ -469,32 +519,32 @@ io.on("connection", (socket) => {
         winnerName = roomData.P2;
       }
     }
-    
-    console.log(`Game result: ${isDraw ? 'Draw' : `Winner: ${winnerName}`}`);
-    
+
+    console.log(`Game result: ${isDraw ? "Draw" : `Winner: ${winnerName}`}`);
+
     // Notify all players in the room
     io.to(data.roomId).emit("gameOver", {
       winner: winnerName,
       winnerId: winner,
       isDraw: isDraw,
-      testCases: testCases
+      testCases: testCases,
     });
   });
-  
+
   socket.on("discardRoom", (data) => {
     console.log(`Discarding room ${data.roomId}`);
-    
+
     // Remove room from arrays
     const roomIndex = rooms.indexOf(data.roomId);
     if (roomIndex !== -1) {
       rooms.splice(roomIndex, 1);
     }
-    
-    const dataIndex = datas.findIndex(room => room.roomId === data.roomId);
+
+    const dataIndex = datas.findIndex((room) => room.roomId === data.roomId);
     if (dataIndex !== -1) {
       datas.splice(dataIndex, 1);
     }
-    
+
     console.log(`Room ${data.roomId} discarded successfully`);
   });
 
